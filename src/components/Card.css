@@ -1,0 +1,9 @@
+.card {
+    height: 15rem;
+    width: 10rem;
+    border-radius: var(--border-radius);
+}
+
+.card__value {
+    padding: 10px 10px;
+}

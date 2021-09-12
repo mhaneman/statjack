@@ -1,0 +1,18 @@
+.table {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    border-radius: var(--border-radius);
+
+    min-height: 70vh;
+    background-color: var(--color-green);
+}
+
+.table__cards {
+    display: flex;
+}
+
+.table__cards > * {
+    margin: 0 15px;
+}
