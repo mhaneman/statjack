@@ -3,4 +3,23 @@
     min-height: 100vh;
     font-size: calc(10px + 2vmin);
     color: white;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.actionBar {
+    display: flex;
+    justify-content: center;
+
+    margin: 15px 20px;
+}
+
+button {
+    width: 100px;
+    height: 50px;
+    border-radius: var(--border-radius);
+
+    margin: 5px 5px;
+
 }

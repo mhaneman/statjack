@@ -3,26 +3,20 @@ import './CountGraph.css'
 import React from 'react'
 import { ResponsiveContainer, Tooltip, LineChart, Line, YAxis, XAxis} from 'recharts';
 
-const getCount = (card) => {
-    if (typeof card === 'string' || card === 10)
-        return -1;
-    if (card <= 9 && card >= 7)
-        return 0;
-    return 1; 
-}
+function CountGraph({ count }) {
 
-function CountGraph({usedCards}) {
-    
-    let currentCount = 0;
-    let data = usedCards.map((card, i) => {
-        currentCount = getCount(card.number) + currentCount;
-        return {order: i, count: currentCount};
+    let runningCount = count.map((c, i) => {
+        return {order: i, count: c};
+    });
+
+    let trueCount = count.map((c, i) => {
+        return {order: i, count: c * (i/416)};
     });
 
     return (
         <div className='countGraph'>
             <ResponsiveContainer width="95%" height={200}>
-                <LineChart data={data}>
+                <LineChart data={runningCount}>
 
                     <Line type="monotone" dataKey="count" stroke="#8884d8" isAnimationActive = {false} />
 
@@ -30,17 +24,37 @@ function CountGraph({usedCards}) {
                         type="number"
                         dataKey = "order"
                         allowDataOverflow = {true}
-                        domain = {[0, 104]} 
+                        domain = {[0, 416]} 
                     />
 
                     <YAxis
                         allowDataOverflow = {true}
                         tickLine = {false}
-                        ticks = {[-4, 4]}
-                        domain = {[-8, 8]} 
+                        ticks = {[0]}
+                        domain = {[-30, 30]} 
                     />
 
-                    {/* <Tooltip /> */}
+                </LineChart>
+            </ResponsiveContainer>
+
+            <ResponsiveContainer width="95%" height={200}>
+                <LineChart data={trueCount}>
+
+                    <Line type="monotone" dataKey="count" stroke="#8884d8" isAnimationActive = {false} />
+
+                    <XAxis hide
+                        type="number"
+                        dataKey = "order"
+                        allowDataOverflow = {true}
+                        domain = {[0, 416]} 
+                    />
+
+                    <YAxis
+                        allowDataOverflow = {true}
+                        tickLine = {false}
+                        ticks = {[0]}
+                        domain = {[-8, 8]} 
+                    />
 
                 </LineChart>
             </ResponsiveContainer>

@@ -18,17 +18,17 @@ const Suit = (suit) => {
     }
 }
 
-function Card({value, suit, faceup}) {
+function Card({value, suit}) {
     return (
-        faceup ? 
+        (value == null && suit == null) ? 
+            <div className='card' style = {{backgroundColor: 'rgb(23, 23, 23)'}}>
+            </div>
+            :
             <div className='card' style = {{backgroundColor: 'rgb(73, 73, 73)'}}>
                 <div className='card__value' >
                     <h3> {value} </h3>
                     { Suit(suit) }
                 </div>
-            </div>
-        :
-            <div className='card' style = {{backgroundColor: 'rgb(23, 23, 23)'}}>
             </div>
     )
 }
