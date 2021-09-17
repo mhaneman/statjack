@@ -1,7 +1,7 @@
 import './CountGraph.css'
 
 import React from 'react'
-import { ResponsiveContainer, Tooltip, LineChart, Line, YAxis, XAxis} from 'recharts';
+import { ResponsiveContainer, LineChart, Line, YAxis, XAxis} from 'recharts';
 
 function CountGraph({ count }) {
 

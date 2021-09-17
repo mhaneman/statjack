@@ -52,11 +52,7 @@ const getCount = (card) => {
 
 function App() {
 
-    const [gameState, setGameState] = useState({
-        placedBet: false,
-        playerBetting: false,
-        houseBetting: false,
-    });
+    const [gameState, setGameState] = useState(0);
 
     const [shoe, setShoe] = useState(initalizeShoe(8));
     const [count, setCount] = useState([]);
@@ -67,7 +63,7 @@ function App() {
     const [chips, setChips] = useState({bet: 10, pocket: 50});
 
 
-    // get random card from deck
+    // get random card from deck and add it to the count
     const getRandomCard = (index) => {
         let randNum = Math.floor((Math.random() * shoe.length));
         let card = shoe.splice(randNum, 1)[0];
@@ -80,85 +76,102 @@ function App() {
         let newHand = [...state.hand, card];
         setState({hand: newHand, sum: getHandSum(newHand)});
     }
-
-    const houseLogic = () => {
-        while (house.sum < 17) {
-            hit(house, setHouse);
-        }
-    }
-
-    // TODO: refactor this block of spaggetii
     
     useEffect(() => {
 
-        // reset cards for new round
-        if (!gameState.playerBetting && !gameState.houseBetting) {
+        switch(gameState) {
 
-            let newHand = [getRandomCard()];
-            setHouse({hand: newHand, sum: getHandSum(newHand)});
+            //initalize board
+            case 1:
+                let newHand = [getRandomCard()];
+                setHouse({hand: newHand, sum: getHandSum(newHand)});
+                newHand = [getRandomCard(), getRandomCard()];
+                setPlayer({hand: newHand, sum: getHandSum(newHand)});
+                
+                setGameState(2);
+                break;
 
-            newHand = [getRandomCard(), getRandomCard()];
-            setPlayer({hand: newHand, sum: getHandSum(newHand)});
+            //check if user goes over 21
+            case 2:
+                if (player.sum > 21) {
+                    setGameState(4);
+                    hit(house, setHouse);
+                }
+                break;
+            
+            //house bets
+            case 3:
+                var hand = house.hand;
+                var sum = house.sum;
 
-            setGameState({playerBetting: true, houseBetting: false});
-        }
+                while (sum < 17) {
+                    let card = getRandomCard();
+                    hand = [...hand, card];
+                    sum = getHandSum(hand);
+                }
+                setHouse({hand: hand, sum: sum});
 
-        // dont let player place more bets over 21
-        if (gameState.playerBetting && !gameState.houseBetting) {
-            if (player.sum > 21) {
-                chips.pocket -= chips.bet;
-                setGameState({playerBetting: false, houseBetting: false});
-            }
-        }
+                setGameState(4);
+                break;
 
-        // the house bets
-        if (!gameState.playerBetting && gameState.houseBetting) {
-            if (house.sum >= 17) {
+            // deterine bets
+            case 4:
+                switch (true) {
+                    case player.sum > 21:
+                        setChips({pocket: chips.pocket - chips.bet, bet: 10});
+                        break;
+                    
+                    case player.sum > house.sum || house.sum > 21:
+                        setChips({pocket: chips.pocket + chips.bet, bet: 10});
+                        break;
+
+                    case player.sum < house.sum:
+                        setChips({pocket: chips.pocket - chips.bet, bet: 10});
+                        break;
+
+                    default:
+                        console.log("default");
+                }
+                setGameState(5);
+                break;
+            
+            //reset
+            case 5:
                 const timer = setTimeout(() => {
-
-                    if (player.sum > house.sum || house.sum > 21)
-                        chips.pocket += chips.bet;
-                    else if (player.sum < house.sum)
-                        chips.pocket -= chips.bet;
-
-                    setGameState({playerBetting: false, houseBetting: false});
-
+                    setHouse({hand: [], sum: 0});
+                    setPlayer({hand: [], sum: 0});
+                    setGameState(0);
                 }, 2000);
                 return () => clearTimeout(timer);
-
-            } else {
-                const timer = setTimeout(() => {
-
-                    hit(house, setHouse);
-
-                }, 1500);
-                return () => clearTimeout(timer);
-            }
+            
+            default:
+                console.log("default");
         }
 
     }, [gameState, player, house]);
 
+    
     //handle button click
     const handleHit = () => {
         hit(player, setPlayer);
     }
 
     const handleStay = () => {
-        setGameState({playerBetting: false, houseBetting: true});
+        setGameState(3);
     }
 
     const handleIncreaseBet = () => {
         if (chips.bet < chips.pocket)
-            setChips({...chips, bet: chips.bet += 10})
+            setChips({...chips, bet: chips.bet += 10});
     }
 
     const handleDecreaseBet = () => {
         if (chips.bet > 10)
-        setChips({...chips, bet: chips.bet -= 10})
+        setChips({...chips, bet: chips.bet -= 10});
     }
 
     const handleSubmitBet = () => {
-        gameState.placedBet = true;
+        setGameState(1);
     }
 
   return (
@@ -171,11 +184,11 @@ function App() {
         />
 
         <div className='actionBar'>
-            <button onClick = { handleHit } disabled = { !gameState.playerBetting }> Hit </button>
-            <button onClick = { handleStay } disabled = { gameState.houseBetting || !gameState.playerBetting }> Stay </button>
-            <button onClick = { handleIncreaseBet }> Bet + </button>
-            <button onClick = { handleDecreaseBet }> Bet - </button>
-            <button onClick = { handleSubmitBet }> Submit Bet </button>
+            <button onClick = { handleHit } disabled = { gameState !== 2 }> Hit </button>
+            <button onClick = { handleStay } disabled = { gameState !== 2 }> Stay </button>
+            <button onClick = { handleIncreaseBet } disabled = { gameState >= 1 }> Bet + </button>
+            <button onClick = { handleDecreaseBet } disabled = { gameState >= 1 }> Bet - </button>
+            <button onClick = { handleSubmitBet } disabled = { gameState >= 1 }> Submit Bet </button>
         </div>
 
         <CountGraph 

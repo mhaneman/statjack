@@ -17,7 +17,7 @@ function Table({player, chips, house, gameState}) {
                         <Card className = 'table__card'
                             value = {card.number}
                             suit = {card.suit}
-                        />  
+                        />
                     ) 
                 }
                 {
