@@ -53,19 +53,17 @@ const getCount = (card) => {
 function App() {
 
     const [gameState, setGameState] = useState({
+        placedBet: false,
         playerBetting: false,
         houseBetting: false,
     });
 
-    //shoe and stats
     const [shoe, setShoe] = useState(initalizeShoe(8));
     const [count, setCount] = useState([]);
 
-    //hands
     const [player, setPlayer] = useState({hand: [], sum: 0});
     const [house, setHouse] = useState({hand: [], sum: 0});
 
-    //chips
     const [chips, setChips] = useState({bet: 10, pocket: 50});
 
 
@@ -83,6 +81,14 @@ function App() {
         setState({hand: newHand, sum: getHandSum(newHand)});
     }
 
+    const houseLogic = () => {
+        while (house.sum < 17) {
+            hit(house, setHouse);
+        }
+    }
+
+    // TODO: refactor this block of spaggetii
+    
     useEffect(() => {
 
         // reset cards for new round
@@ -151,6 +157,10 @@ function App() {
         setChips({...chips, bet: chips.bet -= 10})
     }
 
+    const handleSubmitBet = () => {
+        gameState.placedBet = true;
+    }
+
   return (
     <div className = 'app'>
         <Table 
@@ -165,6 +175,7 @@ function App() {
             <button onClick = { handleStay } disabled = { gameState.houseBetting || !gameState.playerBetting }> Stay </button>
             <button onClick = { handleIncreaseBet }> Bet + </button>
             <button onClick = { handleDecreaseBet }> Bet - </button>
+            <button onClick = { handleSubmitBet }> Submit Bet </button>
         </div>
 
         <CountGraph 
