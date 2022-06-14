@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/statjack/static/css/main.ce92ea6b.css",
+    "main.js": "/statjack/static/js/main.dbcac27b.js",
+    "static/js/787.309c2d44.chunk.js": "/statjack/static/js/787.309c2d44.chunk.js",
+    "static/media/PokerChip.svg": "/statjack/static/media/PokerChip.c65276581550aa68f32b920580972cc8.svg",
+    "index.html": "/statjack/index.html",
+    "main.ce92ea6b.css.map": "/statjack/static/css/main.ce92ea6b.css.map",
+    "main.dbcac27b.js.map": "/statjack/static/js/main.dbcac27b.js.map",
+    "787.309c2d44.chunk.js.map": "/statjack/static/js/787.309c2d44.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ce92ea6b.css",
+    "static/js/main.dbcac27b.js"
+  ]
+}
