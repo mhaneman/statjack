@@ -2,9 +2,41 @@ import './Table.css'
 
 import { ReactComponent as PokerChip } from '../PokerChip.svg'
 
+import {useState, useEffect} from 'react'
 
 import Card from './Card'
-import React from 'react'
+
+const useDelayedRender = delay => {
+    const [delayed, setDelayed] = useState(true);
+    useEffect(() => {
+      const timeout = setTimeout(() => setDelayed(false), delay);
+      return () => clearTimeout(timeout);
+    }, []);
+    return fn => !delayed && fn();
+};
+
+const DelayedCard = ({card, delay}) => {
+    const delayedRender = useDelayedRender(delay);
+    return (
+        delayedRender(() =>   
+            <Card className = 'table__card'
+                value = {card.number}
+                suit = {card.suit}
+            />
+        )
+    );
+}
+
+const DelayedHand = ({cards, sums, delay}) => {
+    return (
+        cards.map((card, i) => 
+            <DelayedCard
+                card = {card}
+                delay = {delay * i}
+            />
+        )
+    );
+}
 
 function Table({player, chips, house, gameState}) {
     return (
